@@ -1,98 +1,36 @@
 <!DOCTYPE html>
-    <html>
+<html>
 
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>IO Chat</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <style>
-            body{
-                margin-top: 30px;
-            }
-            #messageArea{
-                display: none;
-            }
-        </style>
-    </head>
-
-    <body>
-        <div class="container">
-            <div id="userFormArea" class="row">
-                <div class="col-md-12">
-                    <form id="userForm">
-                        <div class="form-group">
-                            <label>Enter Username</label>
-                            <input class="form-control" id="username" />
-                            <br />
-                            <input type="submit" class="btn btn-primary" value="Login" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div id="messageArea" class="row">
-                <div class="col-md4">
-                    <div class="well">
-                        <h3>Online Users</h3>
-                        <ul class="list-group" id="users"></ul>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="chat" id="chat"></div>
-                    <form id="messageForm">
-                        <div class="form-group">
-                            <label>Enter Message</label>
-                            <textarea class="form-control" id="message"></textarea>
-                            <br />
-                            <input type="submit" class="btn btn-primary" value="Send Message" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <script>
-            $(function () {
-                var socket = io.connect();
-                var $messageForm = $('#messageForm');
-                var $message = $('#message');
-                var $chat = $('#chat');
-                var $messageArea = $('#messageArea');
-                var $userFormArea = $('#userFormArea');
-                var $userForm = $('#userForm');
-                var $users = $('#users');
-                var $username = $('#username');
-
-                $messageForm.submit(function (e) {
-                    e.preventDefault();
-                    socket.emit('send message', $message.val());
-                    $message.val('');
-                });
-                socket.on('new message', function (data) {
-                    $chat.append('<div class="well"><strong>'+data.user+'</strong>: ' + data.msg + '</div>');
-                });
-                $userForm.submit(function (e) {
-                    e.preventDefault();
-                    socket.emit('new user', $username.val(), function(data){
-                        if(data){
-                            $userFormArea.hide();
-                            $messageArea.show();
-                        }
-                    });
-                    $username.val('');
-                });
-
-                socket.on('get users', function(data){
-                    var html = '';
-                    for(i = 0; i<data.length; i++){
-                        html += '<li class="list-group-item">'+data[i]+'</li>';
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>The jQuery Example</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#driver").click(function (event) {
+                $.getJSON('nations.json', function(jd){
+                    var nations = jd['nations'];
+                    var ul = document.createElement('ul');
+                
+                    for(var i = 0;i< nations.length; i++){
+                        var li = document.createElement('li');
+                        li.textContent = nations[i].name + " is in " + nations[i].location;
+                        ul.appendChild(li);
                     }
-                    $users.html(html);
+                    $('#stage').html(ul);
                 });
+               // $('#stage').load('result.html');
             });
-        </script>
-    </body>
+        });
+    </script>
+</head>
 
-    </html>
+<body>
+    <p>Click on the button to load nations.json file</p>
+    <div id="stage" style="background-color:yellow;">STAGE</div>
+    <input type="button" id="driver" value="Load Data" />
+   
+</body>
+
+</html>

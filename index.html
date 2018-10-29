@@ -6,31 +6,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>The jQuery Example</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#driver").click(function (event) {
-                $.getJSON('nations.json', function(jd){
-                    var nations = jd['nations'];
-                    var ul = document.createElement('ul');
-                
-                    for(var i = 0;i< nations.length; i++){
-                        var li = document.createElement('li');
-                        li.textContent = nations[i].name + " is in " + nations[i].location;
-                        ul.appendChild(li);
-                    }
-                    $('#stage').html(ul);
-                });
-               // $('#stage').load('result.html');
-            });
-        });
-    </script>
+    
 </head>
 
 <body>
-    <p>Click on the button to load nations.json file</p>
-    <div id="stage" style="background-color:yellow;">STAGE</div>
+    <p>Click on the button to parse nations.xml file</p>
+    <div id="stage" style="background-color:yellow;"></div>
     <input type="button" id="driver" value="Load Data" />
-   
+    <script>
+        $(document).ready(function () {
+            $('#driver').click(function () {
+                $.ajax({
+                    url: 'nations.xml',
+                    type: 'GET',
+                    dataType: "xml",
+                    success: function(data){
+                    parseXml(data);
+                    }
+                });   
+            });
+        });
+        function parseXml(xml){
+            var nation = $(xml).find("nation");
+
+            $(nation).each(function(){
+                $("#stage").append('<li>' +$(this).find("name").text() + " is in " + $(this).find("location").text() + '</li>');
+            });
+        }
+    </script>
 </body>
 
 </html>
